@@ -1,0 +1,48 @@
+﻿<Window x:Class="ModdersAssistant.MyWindows.TicketEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ModdersAssistant.MyWindows"
+        xmlns:MyControls="clr-namespace:ModdersAssistant.MyControls"
+        mc:Ignorable="d"
+        Title="TicketEditorWindow" Height="450" Width="800"
+        WindowStyle="None" WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        Background="Transparent" AllowsTransparency="True">
+    <Grid>
+        <MyControls:MyShader/>
+        <MyControls:MyGlowBorder Width="{Binding ElementName=mainGrid, Path=ActualWidth, UpdateSourceTrigger=PropertyChanged}"
+                                 Height="{Binding ElementName=mainGrid, Path=ActualHeight, UpdateSourceTrigger=PropertyChanged}"/>
+        <Grid x:Name="mainGrid" Width="800" MinHeight="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+            <StackPanel Margin="7">
+                <TextBlock Text="Title" FontSize="20" Foreground="{DynamicResource textBrush}" FontWeight="Bold"/>
+                <MyControls:MyTextBox x:Name="titleBox" Hint="A few-word summary of the task" Margin="5,5,5,15"
+                                      TextChanged="OnTitleBoxTextChanged"/>
+
+                <TextBlock Text="Type" FontSize="20" Foreground="{DynamicResource textBrush}" FontWeight="Bold"/>
+                <MyControls:MyComboBox x:Name="typeBox" Margin="5,5,5,15"
+                                       SelectedItemChanged="OnTypeBoxSelectedItemChanged"/>
+
+                <TextBlock Text="Description" FontSize="20" Foreground="{DynamicResource textBrush}" FontWeight="Bold"/>
+                <MyControls:MyTextPanel x:Name="descriptionBox" Hint="Will appear as nested bullet point in changelog" 
+                                        Grid.Row="1" Margin="5,5,5,20" MaxWidth="800"
+                                        TextChanged="OnDescriptionBoxTextChanged"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <MyControls:MyButton ButtonText="Confirm" Margin="0,0,5,0" LeftClicked="OnConfirmClicked"/>
+                    <MyControls:MyButton ButtonText="Cancel" Margin="5,0,0,0" Grid.Column="1" LeftClicked="OnCancelClicked"/>
+
+                </Grid>
+
+            </StackPanel>
+
+            
+        </Grid>
+    </Grid>
+</Window>

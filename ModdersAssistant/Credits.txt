@@ -1,0 +1,8 @@
+Gear Icon - https://www.svgrepo.com/svg/472634/gear
+Pencil Icon - https://www.svgrepo.com/svg/532977/pencil
+Folder Icon - https://www.svgrepo.com/svg/522121/folder-2
+DLL File Icon - https://www.svgrepo.com/svg/126981/dll-file-format-variant
+JSON File Icon - https://www.svgrepo.com/svg/154781/json-file
+Markdown File Icon - https://www.svgrepo.com/svg/332064/file-markdown
+PNG File Icon - https://www.svgrepo.com/svg/165931/png
+Bin Icon - https://www.svgrepo.com/svg/433921/bin

@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="ModdersAssistant.MyPanels.ProjectsListPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ModdersAssistant.MyPanels"
+             xmlns:MyControls="clr-namespace:ModdersAssistant.MyControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="900" d:DesignWidth="300"
+             Loaded="OnPanelLoaded">
+    <Grid>
+        <Border Background="{DynamicResource backgroundBrush}" CornerRadius="{DynamicResource borderCorners}">
+            <Grid>
+                <Label Content="My Projects" Style="{DynamicResource titleStyle}" Margin="5,0" Height="46"/>
+                <MyControls:MyTextBox x:Name="searchBar" Hint="Search..."
+                                      VerticalAlignment="Top" Margin="5,51,5,0"
+                                      TextChanged="OnSearchBarTextChanged"/>
+                <MyControls:MySVGButton x:Name="addButton" Source="GUI/Add" SVGMargin="4" 
+                                        HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,7,5,0"
+                                        LeftClicked="OnAddProjectClicked"/>
+                <ScrollViewer Margin="5,86,5,5">
+                    <StackPanel x:Name="projectsPanel"/>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

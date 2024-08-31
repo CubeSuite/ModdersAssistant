@@ -1,0 +1,54 @@
+﻿<UserControl x:Class="ModdersAssistant.MyControls.MyTextBox" x:Name="thisControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ModdersAssistant.MyControls"
+             mc:Ignorable="d"
+             Height="30" d:DesignWidth="200">
+    <Grid>
+        <Border Background="{DynamicResource uiBackgroundBrush}" BorderBrush="{DynamicResource accentBrush}" 
+                CornerRadius="{DynamicResource uiCorners}">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ElementName=inputBox, Path=IsKeyboardFocused, UpdateSourceTrigger=PropertyChanged}" Value="True"/>
+                                <Condition Binding="{Binding ElementName=thisControl, Path=IsReadOnly, UpdateSourceTrigger=PropertyChanged}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="BorderThickness" Value="2"/>
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
+
+        <TextBox x:Name="inputBox" Style="{DynamicResource textBoxStyle}" VerticalContentAlignment="Center" Margin="5,0"
+                 HorizontalContentAlignment="{Binding ElementName=thisControl, Path=InputAlignment, UpdateSourceTrigger=PropertyChanged}" 
+                 Text="{Binding ElementName=thisControl, Path=Input, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, Delay=250}"
+                 IsReadOnly="{Binding ElementName=thisControl, Path=IsReadOnly, UpdateSourceTrigger=PropertyChanged}"
+                 PreviewKeyUp="OnInputBoxPreviewKeyUp"/>
+        <TextBlock Text="{Binding ElementName=thisControl, Path=Hint, UpdateSourceTrigger=PropertyChanged}" 
+                   HorizontalAlignment="{Binding ElementName=thisControl, Path=InputAlignment, UpdateSourceTrigger=PropertyChanged}" 
+                   VerticalAlignment="Center" Opacity="0.5" Margin="5,0"
+                   IsHitTestVisible="False">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Hidden"/>
+                    <Setter Property="Foreground" Value="{DynamicResource textBrush}"/>
+                    <Setter Property="FontSize" Value="14"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=inputBox, Path=Text, UpdateSourceTrigger=PropertyChanged}" Value="">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,96 @@
+﻿<Window x:Class="ModdersAssistant.MyWindows.UploadWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ModdersAssistant.MyWindows"
+        xmlns:MyControls="clr-namespace:ModdersAssistant.MyControls"
+        mc:Ignorable="d"
+        Title="UploadWindow" Height="450" Width="800"
+        WindowStyle="None" WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        Background="Transparent" AllowsTransparency="True">
+    <Grid>
+        <MyControls:MyShader/>
+        <MyControls:MyGlowBorder Width="{Binding ElementName=mainGrid, Path=ActualWidth, UpdateSourceTrigger=PropertyChanged}"
+                                 Height="{Binding ElementName=mainGrid, Path=ActualHeight, UpdateSourceTrigger=PropertyChanged}"/>
+        <Grid x:Name="mainGrid" MinWidth="600" MinHeight="100" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Label Content="Steps To Upload" Style="{DynamicResource titleStyle}" Margin="7,0"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="7">
+                <MyControls:MyButton ButtonText="Confirm As Uploaded" Width="145" LeftClicked="OnConfirmUploadedClick"/>
+                <MyControls:MyButton ButtonText="Cancel" Margin="5,0,0,0" LeftClicked="OnCancelClicked"/>
+            </StackPanel>
+
+            <Border x:Name="confirmShader" Background="Black" Opacity="0.5" CornerRadius="{DynamicResource uiCorners}" 
+                    HorizontalAlignment="Right" VerticalAlignment="Top"
+                    Width="145" Height="30" Margin="0,7,63,0"/>
+
+            <Grid x:Name="buttonGrid" Margin="7,50,7,7">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40" x:Name="iconRow"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                
+                <!--Info Textblock-->
+                <Rectangle Width="2" Grid.Column="1" HorizontalAlignment="Right" Grid.RowSpan="6" Fill="{DynamicResource accentBrush}"/>
+                <TextBlock TextWrapping="Wrap" Style="{DynamicResource textStyle}" 
+                           HorizontalAlignment="Center" Grid.Column="2" Grid.RowSpan="6">
+                    <Run Text="Click a button to initiate that step of the upload process and use the tick box to confirm it's complete and unlock the next step."/>
+                    <LineBreak/>
+                    <LineBreak/>
+                    <Run Text="Once all steps are complete, click 'Confirm As Uploaded'"/>
+                </TextBlock>
+
+                <!--Upload Screenshots-->
+                <MyControls:MyCheckBox x:Name="uploadImagesCheckbox" IsCheckedChanged="OnCheckboxToggled"/>
+                <MyControls:MyButton ButtonText="Upload Screenshots" Margin="10,0" Grid.Column="1"
+                                     LeftClicked="OnUploadScreenshotsClicked"/>
+                
+                <!--Enter Screenshot Links-->
+                <MyControls:MyCheckBox x:Name="enterLinksCheckbox" Grid.Row="1" IsCheckedChanged="OnCheckboxToggled"/>
+                <MyControls:MyButton ButtonText="Enter Screenshot Links" Margin="10,0" Grid.Column="1" Grid.Row="1"
+                                     LeftClicked="OnEnterScreenshotLinksClicked"/>
+
+                <!--Check Manifest-->
+                <MyControls:MyCheckBox x:Name="checkManifestCheckbox" Grid.Row="2" IsCheckedChanged="OnCheckboxToggled"/>
+                <MyControls:MyButton ButtonText="Check Manifest" Margin="10,0" Grid.Column="1" Grid.Row="2"
+                                     LeftClicked="OnCheckManifestClicked"/>
+
+                <!--Check Readme-->
+                <MyControls:MyCheckBox x:Name="checkReadmeCheckbox" Grid.Row="3" IsCheckedChanged="OnCheckboxToggled"/>
+                <MyControls:MyButton ButtonText="Generate And Check README.md" Margin="10,0" Grid.Column="1" Grid.Row="3"
+                                     LeftClicked="OnGenerateAndCheckReadMClicked"/>
+
+                <!--Browse For Icon-->
+                <MyControls:MyCheckBox x:Name="browseForIconCheckbox" Grid.Row="4" IsCheckedChanged="OnCheckboxToggled"/>
+                <MyControls:MyButton ButtonText="Browse For icon.png" Margin="10,0" Grid.Column="1" Grid.Row="4"
+                                     LeftClicked="OnBrowseForIconClicked"/>
+
+                <!--Zip Files-->
+                <MyControls:MyCheckBox x:Name="zipFilesCheckbox" Grid.Row="5" IsCheckedChanged="OnCheckboxToggled"/>
+                <MyControls:MyButton ButtonText="Zip Mod Files" Margin="10,0" Grid.Column="1" Grid.Row="5"
+                                    LeftClicked="OnZipFilesClicked"/>
+
+                <!--Check Manifest-->
+                <MyControls:MyCheckBox x:Name="uploadCheckbox" Grid.Row="6" IsCheckedChanged="OnCheckboxToggled"/>
+                <MyControls:MyButton ButtonText="Upload" Margin="10,0" Grid.Column="1" Grid.Row="6"
+                                     LeftClicked="OnUploadClicked"/>
+
+                <Border x:Name="shader" Background="Black" Opacity="0.5" 
+                        Grid.ColumnSpan="2" Grid.RowSpan="7" Height="240" 
+                        VerticalAlignment="Bottom" Margin="0,0,5,0" CornerRadius="5"/>
+
+            </Grid>
+
+        </Grid>
+    </Grid>
+</Window>

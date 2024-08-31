@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="ModdersAssistant.MyPanels.ModFilePanel" x:Name="thisControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ModdersAssistant.MyPanels"
+             xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+             mc:Ignorable="d" 
+             Height="20" d:DesignWidth="300"
+             MouseLeftButtonUp="OnMouseLeftButtonUp">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="25"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Border CornerRadius="{DynamicResource uiCorners}" Grid.ColumnSpan="2">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="{DynamicResource brightBackgroundBrush}"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=thisControl, Path=IsMouseOver, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource uiBackgroundBrush}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
+        <svgc:SvgViewbox x:Name="svg" Margin="7,2,2,2"/>
+        <TextBlock x:Name="fileNameLabel" Style="{DynamicResource textStyle}"
+           VerticalAlignment="Center" Grid.Column="1" Margin="5,0"/>
+    </Grid>
+</UserControl>

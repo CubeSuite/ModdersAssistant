@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="ModdersAssistant.MyPanels.ScreenshotPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ModdersAssistant.MyPanels"
+             xmlns:MyControls="clr-namespace:ModdersAssistant.MyControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="70" d:DesignWidth="300">
+    <Border Background="{DynamicResource brightBackgroundBrush}" CornerRadius="{DynamicResource borderCorners}">
+        <Grid Margin="5,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="35"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <TextBlock x:Name="nameLabel" Text="Name" FontSize="16" Style="{DynamicResource textStyle}"
+                       VerticalAlignment="Center"/>
+
+            <MyControls:MyTextBox x:Name="urlBox" Hint="URL..." Grid.Row="1" TextChanged="OnURLBoxTextChanged"/>
+
+            <MyControls:MySVGButton Source="GUI/Bin" SVGMargin="4"
+                                    Grid.Column="1" Grid.Row="2" Margin="5,0,0,0"
+                                    LeftClicked="OnDeleteButtonClicked"/>
+
+        </Grid>
+    </Border>
+</UserControl>
