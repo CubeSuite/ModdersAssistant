@@ -34,7 +34,6 @@ namespace ModdersAssistant
 
         // Program Events
 
-        // ToDo: Browse for icon.png
         // ToDo: Only link file in screenshot if .png || .jpg || .jpeg
 
         private void OnProgramLoaded(object sender, RoutedEventArgs e) {

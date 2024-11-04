@@ -7,7 +7,7 @@
         xmlns:MyControls="clr-namespace:ModdersAssistant.MyControls"
         xmlns:MyPanels="clr-namespace:ModdersAssistant.MyPanels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="900" Width="1600"
+        Title="Modder's Assitant" Height="900" Width="1600"
         WindowStyle="None" WindowStartupLocation="CenterScreen" 
         Background="Transparent" AllowsTransparency="True"
         Loaded="OnProgramLoaded" Closing="OnProgramClosing">
@@ -17,23 +17,20 @@
             <Border.Effect>
                 <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="{DynamicResource accentColour}"/>
             </Border.Effect>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Label x:Name="titleLabel" Content="Title" Style="{DynamicResource titleStyle}" Margin="5,0,5,0"/>
-                <MyPanels:ControlBox x:Name="controlBox" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5"/>
-
-                <MyPanels:ProjectsListPanel x:Name="projectsList" Width="300" Grid.Row="1" 
-                                            HorizontalAlignment="Left" Margin="10"
-                                            ProjectClicked="OnProjectClicked"/>
-
-                <Border x:Name="projectPanelBorder" Grid.Row="1" Margin="320,10,10,10">
-                    
-                </Border>
-                
-            </Grid>
         </Border>
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Label x:Name="titleLabel" Content="Title" Style="{DynamicResource titleStyle}" Margin="5,0,5,0"/>
+            <MyPanels:ControlBox x:Name="controlBox" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5"/>
+
+            <MyPanels:ProjectsListPanel x:Name="projectsList" Width="300" Grid.Row="1" 
+                                HorizontalAlignment="Left" Margin="10"
+                                ProjectClicked="OnProjectClicked"/>
+
+            <Border x:Name="projectPanelBorder" Grid.Row="1" Margin="320,10,10,10"/>
+        </Grid>
     </Grid>
 </Window>
