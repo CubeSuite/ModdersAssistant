@@ -26,6 +26,7 @@ namespace ModdersAssistant
         public static bool logDebugMessages = true;
         public static string programName = "Modder's Assistant";
         public static bool safeToSave = false;
+        public static bool doneGameFolderWarning = false;
 
         public static int programVersion = 1;
         public static int majorVersion = 0;

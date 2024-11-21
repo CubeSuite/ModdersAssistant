@@ -1,4 +1,4 @@
-﻿<Window x:Class="ModdersAssistant.MyWindows.UploadWindow"
+﻿<Window x:Class="ModdersAssistant.MyWindows.UploadWindow" x:Name="thisWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -38,6 +38,7 @@
                     <RowDefinition Height="40" x:Name="iconRow"/>
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
                 
                 <!--Info Textblock-->
@@ -75,18 +76,23 @@
                 <MyControls:MyButton ButtonText="Browse For icon.png" Margin="10,0" Grid.Column="1" Grid.Row="4"
                                      LeftClicked="OnBrowseForIconClicked"/>
 
+                <!--Refresh Files-->
+                <MyControls:MyCheckBox x:Name="refreshFilesCheckbox" Grid.Row="5" IsCheckedChanged="OnCheckboxToggled"/>
+                <MyControls:MyButton ButtonText="Refresh Files" Margin="10,0" Grid.Column="1" Grid.Row="5"
+                                     LeftClicked="OnRefreshFilesClicked"/>
+
                 <!--Zip Files-->
-                <MyControls:MyCheckBox x:Name="zipFilesCheckbox" Grid.Row="5" IsCheckedChanged="OnCheckboxToggled"/>
-                <MyControls:MyButton ButtonText="Zip Mod Files" Margin="10,0" Grid.Column="1" Grid.Row="5"
+                <MyControls:MyCheckBox x:Name="zipFilesCheckbox" Grid.Row="6" IsCheckedChanged="OnCheckboxToggled"/>
+                <MyControls:MyButton ButtonText="Zip Mod Files" Margin="10,0" Grid.Column="1" Grid.Row="6"
                                     LeftClicked="OnZipFilesClicked"/>
 
-                <!--Check Manifest-->
-                <MyControls:MyCheckBox x:Name="uploadCheckbox" Grid.Row="6" IsCheckedChanged="OnCheckboxToggled"/>
-                <MyControls:MyButton ButtonText="Upload" Margin="10,0" Grid.Column="1" Grid.Row="6"
+                <!--Upload-->
+                <MyControls:MyCheckBox x:Name="uploadCheckbox" Grid.Row="7" IsCheckedChanged="OnCheckboxToggled"/>
+                <MyControls:MyButton ButtonText="Upload" Margin="10,0" Grid.Column="1" Grid.Row="7"
                                      LeftClicked="OnUploadClicked"/>
 
                 <Border x:Name="shader" Background="Black" Opacity="0.5" 
-                        Grid.ColumnSpan="2" Grid.RowSpan="7" Height="240" 
+                        Grid.ColumnSpan="2" Grid.RowSpan="8" Grid.Row="1" Height="280"
                         VerticalAlignment="Bottom" Margin="0,0,5,0" CornerRadius="5"/>
 
             </Grid>

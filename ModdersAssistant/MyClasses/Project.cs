@@ -1,11 +1,13 @@
 ﻿using ModdersAssistant.MyClasses;
 using ModdersAssistant.MyClasses.Globals;
+using ModdersAssistant.MyWindows;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Common;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -13,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Threading;
 
 namespace ModdersAssistant.MyClasses
 {
@@ -30,6 +33,7 @@ namespace ModdersAssistant.MyClasses
         public List<string> credits = new List<string>();
         public List<Ticket> tickets = new List<Ticket>();
         public List<Screenshot> screenshots = new List<Screenshot>();
+        public List<string> gameFolderFiles = new List<string>();
 
         public string sourceFolder;
         public string modFilesFolder;
@@ -40,6 +44,7 @@ namespace ModdersAssistant.MyClasses
         public string latestZipFile;
 
         public bool isReleased => version == lastReleaseVersion;
+
 
         // Constructors
 
@@ -170,6 +175,10 @@ namespace ModdersAssistant.MyClasses
             string path = $"{modFilesFolder}\\manifest.json";
             string json = JsonConvert.SerializeObject(manifest, Formatting.Indented);
             File.WriteAllText(path, json);
+
+            File.SetCreationTime(path, DateTime.Now);
+            File.SetLastWriteTime(path, DateTime.Now);
+            File.SetLastAccessTime(path, DateTime.Now);
         }
 
         public void WriteReadMePlaceHolder() {
@@ -180,6 +189,10 @@ namespace ModdersAssistant.MyClasses
             string path = $"{modFilesFolder}\\README.md";
             string markdown = MarkdownWriter.GetMarkdownForProject(this);
             File.WriteAllText(path, markdown);
+
+            File.SetCreationTime(path, DateTime.Now);
+            File.SetLastWriteTime(path, DateTime.Now);
+            File.SetLastAccessTime(path, DateTime.Now);
         }
 
         public string GenerateDiscordMessage() {
@@ -199,6 +212,101 @@ namespace ModdersAssistant.MyClasses
             }
 
             return message;
+        }
+
+        public async Task SearchForModFiles() {
+            if (!Directory.Exists(Settings.userSettings.gameFolder.value)) {
+                if (!ProgramData.doneGameFolderWarning) {
+                    ProgramData.doneGameFolderWarning = true;
+                    GuiUtils.ShowWarningMessage("Invalid Game Folder Setting", "You need to update your Game Folder setting to a folder that exists.");
+                }
+
+                return;
+            }
+
+            string pluginsFolder = $"{Settings.userSettings.gameFolder.value}\\BepInEx\\plugins";
+            string configFolder = $"{Settings.userSettings.gameFolder.value}\\BepInEx\\config";
+
+            await Task.Run(() => {
+                foreach (string file in Directory.GetFiles(pluginsFolder)) {
+                    if (file.Contains(GetFileSafeName())) {
+                        string newPath = $"{modFilesFolder}/plugins/{GetFileSafeName()}/{Path.GetFileName(file)}";
+                        File.Copy(file, newPath, true);
+                        if (!gameFolderFiles.Contains(file)) {
+                            gameFolderFiles.Add(file);
+                        }
+                    }
+                }
+
+                foreach (string folder in Directory.GetDirectories(pluginsFolder)) {
+                    if (folder.Contains(GetFileSafeName())) {
+                        foreach (string file in Directory.GetFiles(folder)) {
+                            if (file.Contains(GetFileSafeName())) {
+                                Directory.CreateDirectory($"{modFilesFolder}/plugins");
+                                Directory.CreateDirectory($"{modFilesFolder}/plugins/{GetFileSafeName()}");
+                                string newPath = $"{modFilesFolder}/plugins/{GetFileSafeName()}/{Path.GetFileName(file)}";
+                                File.Copy(file, newPath, true);
+                                if (!gameFolderFiles.Contains(file)) {
+                                    gameFolderFiles.Add(file);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                foreach (string file in Directory.GetFiles(configFolder)) {
+                    if (file.Contains(GetFileSafeName())) {
+                        hasConfigFile = true;
+                        Directory.CreateDirectory($"{modFilesFolder}/config");
+                        string newPath = $"{modFilesFolder}/config/{Path.GetFileName(file)}";
+                        File.Copy(file, newPath, true);
+                        if (!gameFolderFiles.Contains(file)) {
+                            gameFolderFiles.Add(file);
+                        }
+                    }
+                }
+
+                foreach (string file in Directory.GetFiles(screenshotsFolder)) {
+                    string name = Path.GetFileName(file);
+                    if (screenshots.Where(screenshot => screenshot.name == name).Count() == 0) {
+                        screenshots.Add(new Screenshot() {
+                            name = name,
+                            url = ""
+                        });
+                    }
+                }
+            });
+        }
+
+        public async Task<bool> RefreshFiles() {
+            if(!FindSlnFile(sourceFolder, out string slnPath)) {
+                GuiUtils.ShowErrorMessage("Can't Auto Refresh Files", "Modder's Assistant couldn't find a .sln file in this Project's 'Source' folder,\n" +
+                                                                      "so it can't refresh the mod files.");
+                return false;
+            }
+
+            if(hasConfigFile && !File.Exists(Settings.userSettings.gameExecutable.value)) {
+                GuiUtils.ShowErrorMessage("Can't Auto Refresh Files", "This project has a config file that can't be refreshed as the setting 'Game Executable' has not been set correctly.");
+                return false;
+            }
+
+            await SearchForModFiles();
+            DeleteFromGameFolder();
+            ClearModFiles(modFilesFolder);
+            RebuildPlugin(slnPath);
+            
+            if (hasConfigFile) {
+                RegenerateConfigFile();
+                while (!Directory.Exists($"{modFilesFolder}\\config")) {
+                    await Task.Delay(1000);
+                    await SearchForModFiles();
+                }
+            }
+            else {
+                await SearchForModFiles();
+            }
+
+            return true;
         }
 
         public bool ZipModFiles() {
@@ -245,6 +353,44 @@ namespace ModdersAssistant.MyClasses
 
             path = "";
             return false;
+        }
+
+        // Refresh Mod Files
+
+        private void DeleteFromGameFolder() {
+            foreach(string file in gameFolderFiles) {
+                File.Delete(file);
+            }
+
+            gameFolderFiles.Clear();
+        }
+
+        private void ClearModFiles(string folder) {
+            string[] files = Directory.GetFiles(folder);
+            foreach(string file in files) {
+                if (file.EndsWith("icon.png") || file.EndsWith("manifest.json") || file.EndsWith("README.md")) continue;
+                File.Delete(file);
+            }
+
+            foreach(string subFolder in Directory.GetDirectories(folder)) {
+                ClearModFiles(subFolder);
+                Directory.Delete(subFolder);
+            }
+        }
+
+        private void RebuildPlugin(string slnPath) {
+            Process.Start(new ProcessStartInfo() {
+                FileName = "dotnet",
+                Arguments = $"build \"{slnPath}\" --configuration Release --no-incremental",
+                UseShellExecute = true,
+                CreateNoWindow = true
+            });
+        }
+
+        private void RegenerateConfigFile() {
+            GuiUtils.ShowInfoMessage("Refreshing Config File", "Modder's Assistant will now launch the game to refresh the config file.\n" +
+                                                               "Please close this popup and then quit the game at the title screen.");
+            Process.Start(Settings.userSettings.gameExecutable.value);
         }
     }
 }

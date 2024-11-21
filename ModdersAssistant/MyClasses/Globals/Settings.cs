@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.IO;
@@ -94,6 +95,30 @@ namespace ModdersAssistant
                 }
             }
         };
+        public StringSetting gameExecutable = new StringSetting() {
+            name = SettingNames.gameExecutable,
+            description = "The executable that launches the game you are modding.",
+            category = "General"
+        };
+        public ButtonSetting browseForGameExecutable = new ButtonSetting() {
+            name = SettingNames.browseForGameExecutable,
+            description = "Browse for the executable that launches the game you are modding.",
+            category = "General",
+            buttonText = "Browse",
+            OnClick = delegate () {
+                System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog() {
+                    Filter = "Executables (*.exe)|*.exe"
+                };
+                if (!string.IsNullOrEmpty(userSettings.gameFolder.value) && Directory.Exists(userSettings.gameFolder.value)) {
+                    dialog.InitialDirectory = userSettings.gameFolder.value;
+                }
+
+                if(dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                    userSettings.SetSetting(SettingNames.gameExecutable, dialog.FileName, false);
+                }
+            }
+        };
+        
         
         // README Template
         public StringSetting bannerImageLink = new StringSetting() {
@@ -277,6 +302,8 @@ namespace ModdersAssistant
                 browseForProjectsFolder,
                 gameFolder,
                 browseForGameFolder,
+                gameExecutable,
+                browseForGameExecutable,
                 
                 // README Template
                 bannerImageLink,
@@ -324,6 +351,7 @@ namespace ModdersAssistant
                 case SettingNames.thunderstoreUploadPage: thunderstoreUploadPage.value = value; break;
                 case SettingNames.projectsFolder: projectsFolder.value = value; break;
                 case SettingNames.gameFolder: gameFolder.value = value; break;
+                case SettingNames.gameExecutable: gameExecutable.value = value; break;
                 case SettingNames.bannerImageLink: bannerImageLink.value = value; break;
                 case SettingNames.backupsFolder: backupsFolder.value = value; break;
                 default:
@@ -470,6 +498,8 @@ namespace ModdersAssistant
         public const string browseForProjectsFolder = "Browse For Projects Folder";
         public const string gameFolder = "Game Folder";
         public const string browseForGameFolder = "Browse For Game Folder";
+        public const string gameExecutable = "Game Executable";
+        public const string browseForGameExecutable = "Browse For Game Executable";
         
         // README Template
         public const string bannerImageLink = "Banner Image Link";

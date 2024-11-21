@@ -58,7 +58,7 @@ namespace ModdersAssistant.MyClasses.Globals
                 markdown += $"{project.changelogHistory}\n\n";
             }
 
-            markdown += $"## Credits\n\n{string.Join("\n", project.credits)}\n\n";
+            if(project.credits.Count > 0) markdown += $"## Credits\n\n{string.Join("\n", project.credits)}\n\n";
             markdown += $"## Disclaimer\n\n{StringUtils.GetDisclaimerTemplate()}\n\n";
 
             return markdown;

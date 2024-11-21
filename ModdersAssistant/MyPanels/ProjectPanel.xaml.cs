@@ -40,7 +40,6 @@ namespace ModdersAssistant.MyPanels
         public DispatcherTimer fileSearchTimer = new DispatcherTimer() { Interval = TimeSpan.FromSeconds(5) };
         
         private bool finishedLoading = false;
-        private bool doneGameFolderWarning = false;
 
         // Custom Events
 
@@ -252,60 +251,11 @@ namespace ModdersAssistant.MyPanels
             ShowProject(project);
         }
 
-        private void OnFileSearchTimerTick(object sender, EventArgs e) {
-            if (!Directory.Exists(Settings.userSettings.gameFolder.value)) {
-                if (!doneGameFolderWarning) {
-                    doneGameFolderWarning = true;
-                    GuiUtils.ShowWarningMessage("Invalid Game Folder Setting", "You need to update your Game Folder setting to a folder that exists.");
-                }
-
-                return;
-            }
-
-            string pluginsFolder = $"{Settings.userSettings.gameFolder.value}\\BepInEx\\plugins";
-            string configFolder = $"{Settings.userSettings.gameFolder.value}\\BepInEx\\config";
-            string screenshotsFolder = project.screenshotsFolder;
-
-            foreach(string file in Directory.GetFiles(pluginsFolder)) {
-                if (file.Contains(project.GetFileSafeName())) {
-                    string newPath = $"{project.modFilesFolder}/plugins/{project.GetFileSafeName()}/{Path.GetFileName(file)}";
-                    File.Copy(file, newPath, true);
-                }
-            }
-
-            foreach(string folder in Directory.GetDirectories(pluginsFolder)) {
-                if (folder.Contains(project.GetFileSafeName())) {
-                    foreach (string file in Directory.GetFiles(folder)) {
-                        if (file.Contains(project.GetFileSafeName())) {
-                            Directory.CreateDirectory($"{project.modFilesFolder}/plugins");
-                            Directory.CreateDirectory($"{project.modFilesFolder}/plugins/{project.GetFileSafeName()}");
-                            string newPath = $"{project.modFilesFolder}/plugins/{project.GetFileSafeName()}/{Path.GetFileName(file)}";
-                            File.Copy(file, newPath, true);
-                        }
-                    }
-                }
-            }
-
-            foreach(string file in Directory.GetFiles(configFolder)) {
-                if (file.Contains(project.GetFileSafeName())) {
-                    project.hasConfigFile = true;
-                    Directory.CreateDirectory($"{project.modFilesFolder}/config");
-                    string newPath = $"{project.modFilesFolder}/config/{Path.GetFileName(file)}";
-                    File.Copy(file, newPath, true);
-                }
-            }
-
-            foreach(string file in Directory.GetFiles(screenshotsFolder)) {
-                string name = Path.GetFileName(file);
-                if(project.screenshots.Where(screenshot => screenshot.name == name).Count() == 0) {
-                    project.screenshots.Add(new Screenshot() {
-                        name = name,
-                        url = ""
-                    });
-                }
-            }
-
+        private async void OnFileSearchTimerTick(object sender, EventArgs e) {
+            fileSearchTimer.Stop();
+            await project.SearchForModFiles();
             LoadModFiles();
+            fileSearchTimer.Start();
         }
 
         // Public Functions
@@ -313,19 +263,24 @@ namespace ModdersAssistant.MyPanels
         public void ShowProject(Project projectToShow) {
             Log.Debug($"Showing {projectToShow}");
             project = projectToShow;
-            
+
             nameLabel.Content = project.name;
             majorBox.Input = project.version.major.ToString();
             minorBox.Input = project.version.minor.ToString();
             patchBox.Input = project.version.patch.ToString();
 
+            Log.Debug($"Set Labels");
+
             releasedLabel.Visibility = project.isReleased ? Visibility.Visible : Visibility.Hidden;
+            Log.Debug($"Set released visibility");
 
             tagLineBox.Input = project.tagline;
             dependenciesBox.Input = string.Join(", ", project.dependencies);
             repoBox.Input = project.repo;
             thunderstoreLinkBox.Input = project.thunderstoreLink;
             descriptionBox.Input = project.description;
+
+            Log.Debug($"Set box inputs");
 
             wrapTextBox.IsChecked = Settings.userSettings.descriptionWrapText.value;
             if (wrapTextBox.IsChecked) {
@@ -335,12 +290,18 @@ namespace ModdersAssistant.MyPanels
                 DisableTextWrapping();
             }
 
+            Log.Debug($"Set wrapping");
+            
             ShowCredits();
             LoadToDoList();
             LoadModFiles();
 
+            Log.Debug($"Populated lists");
+
             fileSearchTimer.Tick += OnFileSearchTimerTick;
             fileSearchTimer.Start();
+
+            Log.Debug($"Started file search timer");
 
             finishedLoading = true;
         }

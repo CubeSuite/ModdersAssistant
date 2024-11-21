@@ -14,6 +14,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
@@ -47,14 +48,15 @@ namespace ModdersAssistant.MyWindows
         // Window Events
 
         private void OnCheckboxToggled(object sender, EventArgs e) {
-            if (uploadImagesCheckbox.IsChecked) shader.Height = 200;
-            if (enterLinksCheckbox.IsChecked) shader.Height = 160;
-            if (checkManifestCheckbox.IsChecked) shader.Height = 120;
+            if (uploadImagesCheckbox.IsChecked) shader.Height = 240;
+            if (enterLinksCheckbox.IsChecked) shader.Height = 200;
+            if (checkManifestCheckbox.IsChecked) shader.Height = 160;
             if (checkReadmeCheckbox.IsChecked) {
-                shader.Height = 80;
+                shader.Height = 120;
                 if (project.hasIconFile) browseForIconCheckbox.IsChecked = true;
             }
-            if (browseForIconCheckbox.IsChecked) shader.Height = 40;
+            if (browseForIconCheckbox.IsChecked) shader.Height = 80;
+            if (refreshFilesCheckbox.IsChecked) shader.Height = 40;
             if (zipFilesCheckbox.IsChecked) shader.Height = 0;
             if (uploadCheckbox.IsChecked) {
                 confirmShader.Visibility = Visibility.Hidden;
@@ -117,16 +119,22 @@ namespace ModdersAssistant.MyWindows
 
         private void OnCheckManifestClicked(object sender, EventArgs e) {
             string manifest = $"{project.modFilesFolder}\\manifest.json";
-            if (!File.Exists(manifest)) {
-                project.WriteManifestJson();
+            if (File.Exists(manifest)) {
+                File.Delete(manifest);
             }
-
+            
+            project.WriteManifestJson();
             Process.Start(manifest);
         }
 
         private void OnGenerateAndCheckReadMClicked(object sender, EventArgs e) {
+            string readmePath = $"{project.modFilesFolder}\\README.md";
+            if (File.Exists(readmePath)) {
+                File.Delete(readmePath);
+            }
+
             project.WriteReadMe();
-            Process.Start($"{project.modFilesFolder}\\README.md");
+            Process.Start(readmePath);
         }
 
         private void OnBrowseForIconClicked(object sender, EventArgs e) {
@@ -139,6 +147,19 @@ namespace ModdersAssistant.MyWindows
                 browseForIconCheckbox.IsChecked = true;
                 OnCheckboxToggled(null, EventArgs.Empty);
             }
+        }
+
+        private async void OnRefreshFilesClicked(object sender, EventArgs e) {
+            GuiUtils.ShowInfoMessage("Refreshing Mod Files", "Modder's Assistant will now refresh the mod files. When complete, the CheckBox will check itself.", "Continue");
+            
+            thisWindow.IsHitTestVisible = false;
+            
+            if(await project.RefreshFiles()) {
+                refreshFilesCheckbox.IsChecked = true;
+                OnCheckboxToggled(null, EventArgs.Empty);
+            }
+
+            thisWindow.IsHitTestVisible = true;
         }
 
         private void OnZipFilesClicked(object sender, EventArgs e) {
