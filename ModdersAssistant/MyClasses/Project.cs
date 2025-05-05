@@ -27,7 +27,7 @@ namespace ModdersAssistant.MyClasses
         public string tagline;
         public string description;
         public string changelogHistory;
-        public string repo;
+        public string repo = Settings.userSettings.defaultGitHubRepo.value;
         public string thunderstoreLink;
         public List<string> dependencies = new List<string>();
         public List<string> credits = new List<string>();
@@ -118,9 +118,16 @@ namespace ModdersAssistant.MyClasses
                 return;
             }
 
-            sourceFolder = $"{projectFolder}/Source";
-            Directory.CreateDirectory(sourceFolder);
-            Log.Debug($"Created Source folder for {this}: '{sourceFolder}'");
+            if (string.IsNullOrEmpty(Settings.userSettings.defaultSourceFolder.value)) {
+                sourceFolder = $"{projectFolder}/Source";
+                Directory.CreateDirectory(sourceFolder);
+                Log.Debug($"Created Source folder for {this}: '{sourceFolder}'");
+            }
+            else {
+                sourceFolder = Settings.userSettings.defaultSourceFolder.value;
+                Log.Debug($"Assigned default source folder for {this}");
+            }
+            
 
             modFilesFolder = $"{projectFolder}/Mod Files";
             Directory.CreateDirectory(modFilesFolder);

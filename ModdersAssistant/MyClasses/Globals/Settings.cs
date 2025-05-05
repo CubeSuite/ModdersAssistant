@@ -118,7 +118,16 @@ namespace ModdersAssistant
                 }
             }
         };
-        
+        public StringSetting defaultGitHubRepo = new StringSetting() {
+            name = SettingNames.defaultGitHubRepo,
+            description = "If all your mods are kept in one repo, enter its link here",
+            category = "General"
+        };
+        public StringSetting defaultSourceFolder = new StringSetting() {
+            name = SettingNames.defaultSourceFolder,
+            description = "If all your mods are kept in one solution, enter its path here",
+            category = "General"
+        };
         
         // README Template
         public StringSetting bannerImageLink = new StringSetting() {
@@ -304,6 +313,8 @@ namespace ModdersAssistant
                 browseForGameFolder,
                 gameExecutable,
                 browseForGameExecutable,
+                defaultGitHubRepo,
+                defaultSourceFolder,
                 
                 // README Template
                 bannerImageLink,
@@ -354,6 +365,8 @@ namespace ModdersAssistant
                 case SettingNames.gameExecutable: gameExecutable.value = value; break;
                 case SettingNames.bannerImageLink: bannerImageLink.value = value; break;
                 case SettingNames.backupsFolder: backupsFolder.value = value; break;
+                case SettingNames.defaultGitHubRepo: defaultGitHubRepo.value = value; break;
+                case SettingNames.defaultSourceFolder: defaultSourceFolder.value = value; break;
                 default:
                     Log.Error($"Could not find the StringSetting named '{name}'");
                     return;
@@ -500,6 +513,8 @@ namespace ModdersAssistant
         public const string browseForGameFolder = "Browse For Game Folder";
         public const string gameExecutable = "Game Executable";
         public const string browseForGameExecutable = "Browse For Game Executable";
+        public const string defaultGitHubRepo = "Default GitHub Repo";
+        public const string defaultSourceFolder = "Default Source Folder";
         
         // README Template
         public const string bannerImageLink = "Banner Image Link";
