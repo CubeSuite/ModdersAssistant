@@ -45,7 +45,6 @@ namespace ModdersAssistant.MyClasses
 
         public bool isReleased => version == lastReleaseVersion;
 
-
         // Constructors
 
         public Project() { }

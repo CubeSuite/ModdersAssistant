@@ -202,6 +202,33 @@ namespace ModdersAssistant.MyPanels
             ShowCredits();
         }
 
+        private void OnSourceBoxChangesConfirmed(object sender, EventArgs e) {
+            if (Directory.Exists(sourceBox.Input)) {
+                project.sourceFolder = sourceBox.Input;
+                ProjectManager.UpdateProject(project);
+                Log.Info($"Updated {project}.sourceFolder to {project.sourceFolder}");
+            }
+        }
+
+        private void OnBrowseForSourceClicked(object sender, EventArgs e) {
+            System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
+            if(dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                project.sourceFolder = dialog.SelectedPath;
+                ProjectManager.UpdateProject(project);
+                sourceBox.Input = project.sourceFolder;
+                Log.Info($"Updated {project}.sourceFolder to {project.sourceFolder}");
+            }
+        }
+
+        private void OnOpenSourceClicked(object sender, EventArgs e) {
+            if (Directory.Exists(project.sourceFolder)) {
+                Process.Start(project.sourceFolder);
+            }
+            else {
+                GuiUtils.ShowErrorMessage("Source Folder Not Found", $"Could not find the folde '{project.sourceFolder}'. Please verify that it exists.");
+            }
+        }
+
         private void OnDescriptionBoxTextChanged(object sender, EventArgs e) {
             if (!finishedLoading) return;
             Log.Debug($"Updating description for {project}");
@@ -278,6 +305,7 @@ namespace ModdersAssistant.MyPanels
             dependenciesBox.Input = string.Join(", ", project.dependencies);
             repoBox.Input = project.repo;
             thunderstoreLinkBox.Input = project.thunderstoreLink;
+            sourceBox.Input = project.sourceFolder;
             descriptionBox.Input = project.description;
 
             Log.Debug($"Set box inputs");

@@ -92,6 +92,21 @@
                                              LeftClicked="OnAddCreditsEntryClicked"/>
                     </Grid>
 
+                    <TextBlock Text="Source Folder" FontSize="20" Foreground="{DynamicResource textBrush}" FontWeight="Bold"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <MyControls:MyTextBox x:Name="sourceBox" Hint="None" Margin="5,5,5,15"
+                                              ChangesConfirmed="OnSourceBoxChangesConfirmed"/>
+                        <MyControls:MyButton ButtonText="Browse" Grid.Column="1" Margin="0,0,5,10" Width="120"
+                                             LeftClicked="OnBrowseForSourceClicked"/>
+                        <MyControls:MyButton ButtonText="Open" Grid.Column="2" Margin="0,0,0,10" Width="120"
+                                             LeftClicked="OnOpenSourceClicked"/>
+                    </Grid>
+
                     <TextBlock Text="Description" FontSize="20" Foreground="{DynamicResource textBrush}" FontWeight="Bold"/>
                     
                 </StackPanel>
